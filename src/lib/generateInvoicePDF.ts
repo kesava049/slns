@@ -346,7 +346,7 @@ export const generateInvoicePDF = (invoiceData: InvoiceData, companySettings: Co
   yPos += 6;
 
   // Tax Breakdown Table
-  const taxTableHead = [
+  const taxTableHead: any = [
     [
       { content: 'HSN/SAC', rowSpan: 2, styles: { valign: 'middle', halign: 'center' } },
       { content: 'TAXABLE VALUE', rowSpan: 2, styles: { valign: 'middle', halign: 'center' } },
