@@ -138,10 +138,8 @@ export default function CreateInvoicePage() {
         };
       }
     } else if (field === 'quantity') {
-      newItems[index][field] = parseFloat(value) || 0;
+      newItems[index].quantity = parseFloat(value) || 0;
       newItems[index].amount = newItems[index].rate * (parseFloat(value) || 0);
-    } else {
-      newItems[index][field as keyof InvoiceItem] = value;
     }
 
     setItems(newItems);
