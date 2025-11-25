@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  hsnCode     String
+  rate        Float
+  uom         String        // Unit of Measurement (Kgs, Pcs, etc.)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  invoiceItems InvoiceItem[]
+}
+
+model Customer {
+  id          String    @id @default(cuid())
+  name        String
+  address     String
+  city        String?
+  state       String
+  stateCode   String
+  gstin       String?
+  mobile      String?
+  email       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  invoices    Invoice[]
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  invoiceNumber   String        @unique
+  invoiceDate     DateTime      @default(now())
+  customerId      String
+  customer        Customer      @relation(fields: [customerId], references: [id])
+
+  // Delivery details
+  deliveryAddress String?
+  destination     String?
+  vehicleNumber   String?
+
+  // Amounts
+  subtotal        Float
+  cgst            Float         @default(0)
+  sgst            Float         @default(0)
+  igst            Float         @default(0)
+  totalTax        Float
+  grandTotal      Float
+
+  // Payment
+  paymentMode     String        @default("CREDIT")
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  items           InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Float
+  rate        Float
+  amount      Float
+  createdAt   DateTime @default(now())
+}
+
+model CompanySettings {
+  id          String   @id @default(cuid())
+  name        String
+  tradeLine   String?
+  address     String
+  email       String
+  mobile      String
+  gstin       String
+  bankName    String
+  accountNo   String
+  branch      String
+  ifscCode    String
+  stateCode   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
